@@ -1,0 +1,361 @@
+{% extends "base.html" %}
+
+{% block title %}View Test | StudentMate{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4 mb-5">
+
+    <!-- PAGE HEADER -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+
+        <div>
+            <h2 class="mb-1">{{ test.test_name }}</h2>
+
+            <p class="text-muted mb-0">
+                Semester: {{ test.semester }}
+            </p>
+        </div>
+
+        <a href="{{ url_for('tests') }}" class="btn btn-outline-primary">
+            ← Back to Tests
+        </a>
+
+    </div>
+
+
+    <!-- TEST INFORMATION -->
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-body">
+
+            <h5 class="mb-3">Test Information</h5>
+
+            <div class="row g-3">
+
+                <div class="col-md-4">
+
+                    <div class="border rounded p-3 h-100">
+
+                        <p class="text-muted mb-1">Test Name</p>
+
+                        <h5 class="mb-0">
+                            {{ test.test_name }}
+                        </h5>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-4">
+
+                    <div class="border rounded p-3 h-100">
+
+                        <p class="text-muted mb-1">Semester</p>
+
+                        <h5 class="mb-0">
+                            {{ test.semester }}
+                        </h5>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-4">
+
+                    <div class="border rounded p-3 h-100">
+
+                        <p class="text-muted mb-1">Test Date</p>
+
+                        <h5 class="mb-0">
+                            {{ test.test_date }}
+                        </h5>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- PERFORMANCE SUMMARY -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-4">
+
+            <div class="card shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <p class="text-muted mb-2">
+                        Marks Obtained
+                    </p>
+
+                    <h3 class="mb-0">
+                        {{ test.marks }} / {{ test.total_marks }}
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <p class="text-muted mb-2">
+                        Overall Percentage
+                    </p>
+
+                    <h3 class="mb-0">
+                        {{ test.percentage }}%
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <p class="text-muted mb-2">
+                        Total Subjects
+                    </p>
+
+                    <h3 class="mb-0">
+                        {{ subjects|length }}
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- SUBJECT-WISE MARKS -->
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-body">
+
+            <h5 class="mb-3">Subject-wise Marks</h5>
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead>
+
+                        <tr>
+                            <th>#</th>
+                            <th>Subject</th>
+                            <th>Marks Obtained</th>
+                            <th>Total Marks</th>
+                            <th>Percentage</th>
+                            <th>Performance</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for subject in subjects %}
+
+                        <tr>
+
+                            <td>{{ loop.index }}</td>
+
+                            <td class="fw-semibold">
+                                {{ subject.subject }}
+                            </td>
+
+                            <td>
+                                {{ subject.marks }}
+                            </td>
+
+                            <td>
+                                {{ subject.total_marks }}
+                            </td>
+
+                            <td>
+                                {{ subject.percentage }}%
+                            </td>
+
+                            <td>
+
+                                {% if subject.percentage >= 75 %}
+
+                                    <span class="badge bg-success">
+                                        Excellent
+                                    </span>
+
+                                {% elif subject.percentage >= 60 %}
+
+                                    <span class="badge bg-primary">
+                                        Good
+                                    </span>
+
+                                {% elif subject.percentage >= 40 %}
+
+                                    <span class="badge bg-warning text-dark">
+                                        Average
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-danger">
+                                        Needs Improvement
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
+
+                        {% else %}
+
+                        <tr>
+
+                            <td colspan="6" class="text-center text-muted py-4">
+                                No subject marks found for this test.
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- SUBJECT PERFORMANCE CHART -->
+    {% if subjects %}
+
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-body">
+
+            <h5 class="mb-3">Subject Performance Chart</h5>
+
+            <canvas id="subjectPerformanceChart" height="120"></canvas>
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- FOOTER ACTIONS -->
+    <div class="d-flex flex-wrap gap-2">
+
+        <a href="{{ url_for('tests') }}" class="btn btn-primary">
+            Back to All Tests
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- CHART SCRIPT -->
+{% if subjects %}
+
+<script>
+
+    const subjectLabels = {{ subjects | map(attribute='subject') | list | tojson }};
+
+    const subjectPercentages = {{ subjects | map(attribute='percentage') | list | tojson }};
+
+    const chartCanvas = document.getElementById("subjectPerformanceChart");
+
+    if (chartCanvas && window.Chart) {
+
+        new Chart(chartCanvas, {
+
+            type: "bar",
+
+            data: {
+
+                labels: subjectLabels,
+
+                datasets: [{
+
+                    label: "Marks Percentage",
+
+                    data: subjectPercentages,
+
+                    borderWidth: 1
+
+                }]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                scales: {
+
+                    y: {
+
+                        beginAtZero: true,
+
+                        max: 100,
+
+                        title: {
+
+                            display: true,
+
+                            text: "Percentage (%)"
+
+                        }
+
+                    }
+
+                },
+
+                plugins: {
+
+                    legend: {
+
+                        display: true
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
+
+</script>
+
+{% endif %}
+
+{% endblock %}

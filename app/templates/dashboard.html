@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Dashboard | StudentMate{% endblock %}
+{% block content %}
+<h2 class="mb-1">Hello, {{ session.get('user_name', 'Student') }}! 👋</h2>
+<p class="text-muted mb-4">Your academic progress at a glance.</p>
+<div class="row g-3 mb-4">
+ <div class="col-md-4"><div class="stat-card"><p>Attendance</p><h3>{{ attendance.present or 0 }} / {{ attendance.total or 0 }}</h3><small>Present classes</small></div></div>
+ <div class="col-md-4"><div class="stat-card"><p>Assignments</p><h3>{{ assignments.completed or 0 }} / {{ assignments.total or 0 }}</h3><small>Completed</small></div></div>
+ <div class="col-md-4"><div class="stat-card"><p>Average Marks</p><h3>{{ "%.1f"|format(marks.average or 0) }}%</h3><small>Across recorded tests</small></div></div>
+</div>
+<div class="card p-4 shadow-sm">
+ <h5>Recent test performance</h5>
+ {% if recent_tests %}
+ <canvas id="marksChart" height="100"></canvas>
+ <script>
+ ```javascript
+const labels = {{ recent_tests|map(attribute='test_name')|list|reverse|list|tojson }};
+const values = {{ recent_tests|map(attribute='marks')|list|reverse|list|tojson }};
+const totals = {{ recent_tests|map(attribute='total_marks')|list|reverse|list|tojson }};
+```
+ new Chart(document.getElementById('marksChart'), {
+  type:'bar',
+  data:{labels:labels,datasets:[
+   {label:'Marks obtained',data:values},
+   {label:'Total marks',data:totals}
+  ]},
+  options:{responsive:true,scales:{y:{beginAtZero:true}}}
+ });
+ </script>
+ {% else %}
+ <p class="text-muted mb-0">No test results yet. Add your first test in Tests & Marks.</p>
+ {% endif %}
+</div>
+<div class="row g-3 mt-2">
+ <div class="col-md-6"><a class="quick-link" href="{{ url_for('attendance') }}">＋ Record attendance</a></div>
+ <div class="col-md-6"><a class="quick-link" href="{{ url_for('assignments') }}">＋ Add an assignment</a></div>
+ <div class="col-md-6"><a class="quick-link" href="{{ url_for('notes') }}">＋ Upload notes</a></div>
+ <div class="col-md-6"><a class="quick-link" href="{{ url_for('tests') }}">＋ Enter test marks</a></div>
+</div>
+{% endblock %}

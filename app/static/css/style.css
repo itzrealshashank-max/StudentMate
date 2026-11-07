@@ -1,0 +1,877 @@
+/* ==========================================
+   STUDENTMATE - RESPONSIVE STYLESHEET
+   ========================================== */
+
+/* 1. GLOBAL SETTINGS */
+:root {
+    --primary: #635bff;
+    --primary-dark: #5046e5;
+    --primary-light: #f0efff;
+    --background: #f6f7fb;
+    --surface: #ffffff;
+    --text: #20243a;
+    --muted: #7b8195;
+    --border: #e8eaf2;
+    --success: #16a673;
+    --danger: #ef476f;
+    --warning: #f4a62a;
+    --sidebar-width: 255px;
+    --radius: 15px;
+    --shadow: 0 4px 20px rgba(36, 40, 75, 0.05);
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    min-height: 100%;
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background: var(--background);
+    color: var(--text);
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+a {
+    color: var(--primary);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--primary-dark);
+}
+
+img,
+canvas {
+    max-width: 100%;
+}
+
+/* 2. MAIN APPLICATION LAYOUT */
+
+.app-layout {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    width: 100%;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+/* 3. SIDEBAR */
+
+.sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    width: var(--sidebar-width);
+    min-width: var(--sidebar-width);
+    height: 100vh;
+    height: 100dvh;
+    margin: 0;
+    padding: 25px 18px 18px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    transition: transform 0.25s ease;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    margin: 0 0 38px 5px;
+    color: var(--text);
+    text-decoration: none;
+}
+
+.brand:hover {
+    color: var(--text);
+}
+
+.brand-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 43px;
+    height: 43px;
+    min-width: 43px;
+    border-radius: 13px;
+    background: var(--primary);
+    color: #ffffff;
+    font-size: 23px;
+    box-shadow: 0 5px 14px rgba(99, 91, 255, 0.22);
+}
+
+.brand-name {
+    color: var(--text);
+    font-size: 21px;
+    font-weight: 800;
+    letter-spacing: -0.7px;
+    white-space: nowrap;
+}
+
+.brand-name span {
+    color: var(--primary);
+}
+
+.sidebar-label {
+    margin: 0 0 12px 12px;
+    color: #a0a5b7;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.4px;
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    width: 100%;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    width: 100%;
+    min-height: 48px;
+    margin: 0;
+    padding: 12px 14px;
+    border: 0;
+    border-radius: 12px;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.sidebar-link i {
+    display: inline-block;
+    width: 21px;
+    min-width: 21px;
+    text-align: center;
+    font-size: 18px;
+}
+
+.sidebar-link span {
+    display: inline-block;
+}
+
+.sidebar-link:hover {
+    background: #f7f6ff;
+    color: var(--primary);
+}
+
+.sidebar-link.active {
+    background: var(--primary-light);
+    color: var(--primary);
+    font-weight: 700;
+}
+
+.sidebar-bottom {
+    margin-top: auto;
+    padding-top: 30px;
+}
+
+.sidebar-help {
+    margin: 0 0 22px;
+    padding: 18px 16px;
+    border: 1px solid #ece9ff;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #f4f2ff, #eeecff);
+}
+
+.help-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 39px;
+    height: 39px;
+    margin-bottom: 12px;
+    border-radius: 12px;
+    background: #ffffff;
+    color: var(--primary);
+    font-size: 19px;
+}
+
+.sidebar-help h6 {
+    margin: 0 0 6px;
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.sidebar-help p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+.sidebar-link.logout-link {
+    color: var(--danger);
+}
+
+.sidebar-link.logout-link:hover {
+    background: #fff0f3;
+    color: #d9365e;
+}
+
+/* 4. MAIN CONTENT AREA */
+
+/*
+   Sidebar is fixed, so the main area reserves its width
+   using margin-left. min-width: 0 prevents flex overflow.
+*/
+
+.main-area {
+    display: flex;
+    flex-direction: column;
+    width: calc(100% - var(--sidebar-width));
+    min-width: 0;
+    min-height: 100vh;
+    margin: 0 0 0 var(--sidebar-width);
+    padding: 0;
+    background: var(--background);
+}
+
+.topbar {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    width: 100%;
+    min-height: 83px;
+    flex-shrink: 0;
+    margin: 0;
+    padding: 15px 32px;
+    border: 0;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+}
+
+.topbar-title {
+    color: var(--text);
+    font-size: 18px;
+    font-weight: 800;
+    line-height: 1.4;
+    letter-spacing: -0.4px;
+}
+
+.topbar-subtitle {
+    margin-top: 2px;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.topbar-date {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.topbar-date i {
+    color: var(--primary);
+    font-size: 16px;
+}
+
+.profile-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    border: 1px solid #e7e3ff;
+    border-radius: 50%;
+    background: var(--primary-light);
+    color: var(--primary);
+    font-size: 20px;
+}
+
+.menu-toggle {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: #ffffff;
+    color: var(--text);
+    cursor: pointer;
+    font-size: 23px;
+}
+
+/* 5. PAGE CONTENT */
+
+.page-content {
+    display: block;
+    flex: 1 0 auto;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: 30px 32px;
+    background: var(--background);
+}
+
+.page-content h1,
+.page-content h2,
+.page-content h3,
+.page-content h4 {
+    margin-top: 0;
+    color: var(--text);
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.page-content h1 {
+    font-size: 28px;
+}
+
+.page-content h2 {
+    font-size: 25px;
+}
+
+.page-content h3 {
+    font-size: 19px;
+}
+
+.page-content h4 {
+    font-size: 16px;
+}
+
+.page-content p {
+    color: var(--muted);
+}
+
+/* Prevent long content from stretching the layout */
+
+.page-content > *,
+.page-content .row,
+.page-content .card,
+.page-content .table-responsive {
+    min-width: 0;
+    max-width: 100%;
+}
+
+.page-content .row {
+    --bs-gutter-x: 1.5rem;
+}
+
+/* 6. FOOTER */
+
+.app-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+    flex-shrink: 0;
+    margin: 0;
+    padding: 18px 32px;
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.app-footer i {
+    color: var(--danger);
+}
+
+/* 7. CARDS */
+
+.card {
+    min-width: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+}
+
+.card-header {
+    padding: 17px 20px;
+    border-bottom: 1px solid var(--border);
+    border-radius: var(--radius) var(--radius) 0 0 !important;
+    background: #ffffff;
+    color: var(--text);
+    font-weight: 700;
+}
+
+.card-body {
+    min-width: 0;
+    padding: 22px;
+}
+
+.card-title {
+    color: var(--text);
+    font-weight: 750;
+}
+
+.shadow,
+.shadow-sm {
+    box-shadow: var(--shadow) !important;
+}
+
+.stat-card,
+.stats-card,
+.dashboard-card {
+    height: 100%;
+    min-width: 0;
+    padding: 22px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: #ffffff;
+    box-shadow: var(--shadow);
+}
+
+.stat-card h3,
+.stats-card h3,
+.dashboard-card h3 {
+    margin: 8px 0;
+    font-size: 27px;
+    font-weight: 800;
+}
+
+.stat-card p,
+.stats-card p,
+.dashboard-card p {
+    margin-bottom: 0;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+/* 8. BUTTONS */
+
+.btn {
+    min-height: 39px;
+    padding: 9px 17px;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 650;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    border-color: var(--primary);
+    background: var(--primary);
+    color: #ffffff;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    border-color: var(--primary-dark);
+    background: var(--primary-dark);
+    color: #ffffff;
+}
+
+.btn-success {
+    border-color: var(--success);
+    background: var(--success);
+}
+
+.btn-danger {
+    border-color: var(--danger);
+    background: var(--danger);
+}
+
+.btn-outline-primary {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.btn-outline-primary:hover {
+    border-color: var(--primary);
+    background: var(--primary);
+    color: #ffffff;
+}
+
+/* 9. FORMS */
+
+.form-label {
+    display: block;
+    margin-bottom: 7px;
+    color: #444a60;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.form-control,
+.form-select {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    min-height: 43px;
+    padding: 10px 13px;
+    border: 1px solid #dfe2ed;
+    border-radius: 9px;
+    background-color: #ffffff;
+    color: var(--text);
+    font-size: 13px;
+    box-shadow: none;
+}
+
+.form-control::placeholder {
+    color: #a2a6b5;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(99, 91, 255, 0.11);
+}
+
+textarea.form-control {
+    min-height: 100px;
+}
+
+.page-content form {
+    max-width: 100%;
+}
+
+/* 10. TABLES */
+
+.table-responsive {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    border-radius: 12px;
+}
+
+.table {
+    width: 100%;
+    margin-bottom: 0;
+    color: var(--text);
+    vertical-align: middle;
+    font-size: 12px;
+}
+
+.table thead th {
+    padding: 15px 14px;
+    border-bottom: 1px solid var(--border);
+    background: #fafaff;
+    color: #6d7287;
+    font-size: 11px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.table tbody td {
+    padding: 14px;
+    border-color: #f0f1f6;
+}
+
+.table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.table tbody tr:hover {
+    background: #fcfbff;
+}
+
+/* 11. ALERTS AND BADGES */
+
+.alert {
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 11px;
+    font-size: 13px;
+}
+
+.alert-success {
+    border-color: #c7f0df;
+    background: #edfbf5;
+    color: #137b54;
+}
+
+.alert-danger {
+    border-color: #ffd4dd;
+    background: #fff1f4;
+    color: #b92d4c;
+}
+
+.alert-warning {
+    border-color: #ffebbd;
+    background: #fff9e9;
+    color: #926000;
+}
+
+.alert-info {
+    border-color: #cdeaff;
+    background: #eff9ff;
+    color: #176b9d;
+}
+
+.badge {
+    padding: 6px 9px;
+    border-radius: 7px;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+/* 12. CHARTS */
+
+.chart-container {
+    position: relative;
+    width: 100%;
+    min-height: 240px;
+}
+
+/* 13. LOGIN AND REGISTRATION */
+
+.auth-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 100vh;
+    margin: 0;
+    padding: 30px 18px;
+    background:
+        radial-gradient(circle at top left, #eeecff 0, transparent 38%),
+        radial-gradient(circle at bottom right, #e8f4ff 0, transparent 35%),
+        var(--background);
+}
+
+.auth-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 11px;
+    margin-bottom: 28px;
+}
+
+.auth-content {
+    width: 100%;
+    max-width: 440px;
+    margin: 0 auto;
+    padding: 32px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background: #ffffff;
+    box-shadow: 0 15px 50px rgba(36, 40, 75, 0.08);
+}
+
+.auth-content h1,
+.auth-content h2,
+.auth-content h3 {
+    color: var(--text);
+    font-weight: 800;
+}
+
+.auth-content .form-control {
+    min-height: 46px;
+}
+
+.auth-content .btn {
+    min-height: 45px;
+}
+
+/* 14. GENERAL UTILITIES */
+
+.text-primary {
+    color: var(--primary) !important;
+}
+
+.bg-primary {
+    background-color: var(--primary) !important;
+}
+
+hr {
+    border-color: var(--border);
+    opacity: 1;
+}
+
+/* 15. TABLET LAYOUT */
+
+@media (max-width: 1100px) and (min-width: 769px) {
+    :root {
+        --sidebar-width: 225px;
+    }
+
+    .topbar {
+        padding: 15px 23px;
+    }
+
+    .page-content {
+        padding: 25px 23px;
+    }
+
+    .app-footer {
+        padding: 17px 23px;
+    }
+
+    .topbar-right {
+        gap: 12px;
+    }
+}
+
+/* 16. MOBILE LAYOUT */
+
+@media (max-width: 768px) {
+    :root {
+        --sidebar-width: 255px;
+    }
+
+    .sidebar {
+        transform: translateX(-100%);
+        visibility: hidden;
+        box-shadow: none;
+    }
+
+    .sidebar.sidebar-open {
+        transform: translateX(0);
+        visibility: visible;
+        box-shadow: 10px 0 35px rgba(20, 25, 50, 0.12);
+    }
+
+    .main-area {
+        width: 100%;
+        min-width: 0;
+        margin: 0;
+    }
+
+    .menu-toggle {
+        display: inline-flex;
+    }
+
+    .topbar {
+        min-height: 75px;
+        padding: 12px 16px;
+        gap: 10px;
+    }
+
+    .topbar-title {
+        font-size: 15px;
+    }
+
+    .topbar-subtitle {
+        font-size: 10px;
+    }
+
+    .topbar-right {
+        gap: 9px;
+    }
+
+    .topbar-date {
+        font-size: 10px;
+    }
+
+    .profile-avatar {
+        width: 34px;
+        height: 34px;
+        min-width: 34px;
+        font-size: 17px;
+    }
+
+    .page-content {
+        padding: 21px 15px;
+    }
+
+    .page-content h1 {
+        font-size: 24px;
+    }
+
+    .page-content h2 {
+        font-size: 21px;
+    }
+
+    .card-body {
+        padding: 16px;
+    }
+
+    .app-footer {
+        padding: 15px;
+        flex-wrap: wrap;
+        font-size: 10px;
+    }
+
+    .auth-content {
+        padding: 25px 20px;
+    }
+}
+
+/* 17. SMALL MOBILE SCREENS */
+
+@media (max-width: 480px) {
+    .topbar-subtitle {
+        display: none;
+    }
+
+    .topbar-title {
+        font-size: 13px;
+    }
+
+    .topbar {
+        padding: 12px;
+    }
+
+    .topbar-date {
+        gap: 4px;
+        font-size: 9px;
+    }
+
+    .topbar-right {
+        gap: 6px;
+    }
+
+    .page-content {
+        padding: 16px 11px;
+    }
+
+    .btn {
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+
+    .table thead th,
+    .table tbody td {
+        padding: 10px 9px;
+    }
+
+    .auth-content {
+        padding: 22px 16px;
+    }
+}
+
+/* 18. REDUCED MOTION */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+    }
+}

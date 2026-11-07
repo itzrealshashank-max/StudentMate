@@ -1,0 +1,544 @@
+{% extends "base.html" %}
+{% block title %}Tests & Marks | StudentMate{% endblock %}
+
+{% block content %}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+    <div>
+        <h2 class="mb-1">Tests & Marks</h2>
+        <p class="text-muted mb-0">
+            Create tests, add multiple subjects and track your academic progress.
+        </p>
+    </div>
+</div>
+
+<!-- CREATE NEW TEST -->
+<div class="card p-4 mb-4 shadow-sm">
+    <h5 class="mb-3">Create a New Test</h5>
+
+    <form method="post" id="testForm">
+
+        <div class="row g-3 mb-3">
+
+            <div class="col-md-4">
+                <label class="form-label">Semester</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    name="semester"
+                    placeholder="e.g. Semester 7"
+                    maxlength="50"
+                    required
+                >
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">Test Name</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    name="test_name"
+                    placeholder="e.g. ST-1"
+                    maxlength="150"
+                    required
+                >
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">Test Date</label>
+                <input
+                    type="date"
+                    class="form-control"
+                    name="test_date"
+                    required
+                >
+            </div>
+
+        </div>
+
+        <hr>
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="mb-0">Subjects and Marks</h6>
+
+            <button
+                type="button"
+                class="btn btn-outline-primary btn-sm"
+                id="addSubject"
+            >
+                + Add Subject
+            </button>
+        </div>
+
+        <!-- SUBJECT ROWS -->
+        <div id="subjectsContainer">
+
+            <div class="row g-2 align-items-end subject-row mb-3">
+
+                <div class="col-md-5">
+                    <label class="form-label">Subject</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        name="subject[]"
+                        placeholder="e.g. DBMS"
+                        maxlength="100"
+                        required
+                    >
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Marks Obtained</label>
+                    <input
+                        type="number"
+                        class="form-control"
+                        name="marks[]"
+                        min="0"
+                        step="0.01"
+                        placeholder="e.g. 42"
+                        required
+                    >
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Total Marks</label>
+                    <input
+                        type="number"
+                        class="form-control"
+                        name="total_marks[]"
+                        min="0.01"
+                        step="0.01"
+                        placeholder="e.g. 50"
+                        required
+                    >
+                </div>
+
+                <div class="col-md-1">
+                    <button
+                        type="button"
+                        class="btn btn-outline-danger remove-subject"
+                        disabled
+                        title="Remove subject"
+                    >
+                        ×
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-2">
+            Save Complete Test
+        </button>
+
+    </form>
+</div>
+
+
+<!-- TEST PERFORMANCE CHART -->
+<div class="card p-4 mb-4 shadow-sm">
+
+    <h5 class="mb-3">Test-wise Overall Performance</h5>
+
+    {% if chart_data %}
+
+        <canvas id="testComparisonChart" height="100"></canvas>
+
+    {% else %}
+
+        <p class="text-muted mb-0">
+            Save your first test to see your performance chart.
+        </p>
+
+    {% endif %}
+
+</div>
+
+
+<!-- SAVED TESTS -->
+<div class="card shadow-sm mb-4">
+
+    <div class="card-body">
+
+        <h5 class="mb-3">Saved Tests</h5>
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle mb-0">
+
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Semester</th>
+                        <th>Test</th>
+                        <th>Subjects</th>
+                        <th>Total Marks</th>
+                        <th>Percentage</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for item in items %}
+
+                    <tr>
+
+                        <td>{{ item.test_date }}</td>
+
+                        <td>{{ item.semester }}</td>
+
+                        <td class="fw-semibold">
+                            {{ item.test_name }}
+                        </td>
+
+                        <td>{{ item.subject_count }}</td>
+
+                        <td>
+                            {{ item.marks }} / {{ item.total_marks }}
+                        </td>
+
+                        <td>
+                            {{ item.percentage }}%
+                        </td>
+
+                        <td class="text-nowrap">
+
+                            <a
+                                class="btn btn-sm btn-outline-primary"
+                                href="{{ url_for('view_test', test_id=item.id) }}"
+                            >
+                                View
+                            </a>
+
+                            <form
+                                method="post"
+                                action="{{ url_for('delete_test', test_id=item.id) }}"
+                                class="d-inline"
+                                onsubmit="return confirm('Are you sure you want to delete this test?')"
+                            >
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-sm btn-outline-danger"
+                                >
+                                    Delete
+                                </button>
+
+                            </form>
+
+                        </td>
+
+                    </tr>
+
+                    {% else %}
+
+                    <tr>
+                        <td colspan="7" class="text-center text-muted p-4">
+                            No tests saved yet. Create your first test above.
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- SUBJECT-WISE PERFORMANCE COMPARISON -->
+<div class="card shadow-sm mb-4">
+
+    <div class="card-body">
+
+        <h5 class="mb-3">Subject-wise Performance Comparison</h5>
+
+        <p class="text-muted small">
+            Compare your earliest and latest recorded performance in each subject.
+        </p>
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle mb-0">
+
+                <thead>
+                    <tr>
+                        <th>Subject</th>
+                        <th>Tests Recorded</th>
+                        <th>Latest Test</th>
+                        <th>Latest Percentage</th>
+                        <th>Performance Change</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for row in subject_summaries %}
+
+                    <tr>
+
+                        <td class="fw-semibold">
+                            {{ row.subject }}
+                        </td>
+
+                        <td>
+                            {{ row.test_count }}
+                        </td>
+
+                        <td>
+                            {{ row.latest_test }}
+                        </td>
+
+                        <td>
+                            {{ row.latest_percentage }}%
+                        </td>
+
+                        <td>
+
+                            {% if row.change > 0 %}
+
+                                <span class="text-success">
+                                    ▲ +{{ row.change }}%
+                                </span>
+
+                            {% elif row.change < 0 %}
+
+                                <span class="text-danger">
+                                    ▼ {{ row.change }}%
+                                </span>
+
+                            {% else %}
+
+                                <span class="text-muted">
+                                    No change
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                    {% else %}
+
+                    <tr>
+                        <td colspan="5" class="text-center text-muted p-3">
+                            Subject comparisons will appear after you save tests.
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- JAVASCRIPT -->
+<script>
+(function () {
+
+    const container = document.getElementById("subjectsContainer");
+    const addButton = document.getElementById("addSubject");
+    const testForm = document.getElementById("testForm");
+
+
+    // Enable or disable remove buttons
+    function updateRemoveButtons() {
+
+        const rows = container.querySelectorAll(".subject-row");
+
+        rows.forEach(function (row) {
+
+            const button = row.querySelector(".remove-subject");
+
+            button.disabled = rows.length === 1;
+
+        });
+
+    }
+
+
+    // Add a new subject row
+    addButton.addEventListener("click", function () {
+
+        const firstRow = container.querySelector(".subject-row");
+        const newRow = firstRow.cloneNode(true);
+
+        newRow.querySelectorAll("input").forEach(function (input) {
+            input.value = "";
+        });
+
+        container.appendChild(newRow);
+
+        updateRemoveButtons();
+
+    });
+
+
+    // Remove a subject row
+    container.addEventListener("click", function (event) {
+
+        const button = event.target.closest(".remove-subject");
+
+        if (
+            button &&
+            container.querySelectorAll(".subject-row").length > 1
+        ) {
+
+            button.closest(".subject-row").remove();
+
+            updateRemoveButtons();
+
+        }
+
+    });
+
+
+    // Validate marks before submitting
+    testForm.addEventListener("submit", function (event) {
+
+        const rows = container.querySelectorAll(".subject-row");
+        const subjectNames = [];
+
+        for (const row of rows) {
+
+            const subjectInput = row.querySelector('[name="subject[]"]');
+            const marksInput = row.querySelector('[name="marks[]"]');
+            const totalInput = row.querySelector('[name="total_marks[]"]');
+
+            const subject = subjectInput.value.trim().toLowerCase();
+            const marks = Number(marksInput.value);
+            const total = Number(totalInput.value);
+
+
+            if (!subject) {
+
+                event.preventDefault();
+
+                alert("Please enter a subject name.");
+
+                return;
+
+            }
+
+
+            if (subjectNames.includes(subject)) {
+
+                event.preventDefault();
+
+                alert("Please enter each subject only once in the same test.");
+
+                return;
+
+            }
+
+            subjectNames.push(subject);
+
+
+            if (
+                marksInput.value === "" ||
+                totalInput.value === "" ||
+                !Number.isFinite(marks) ||
+                !Number.isFinite(total) ||
+                marks < 0 ||
+                total <= 0 ||
+                marks > total
+            ) {
+
+                event.preventDefault();
+
+                alert("Marks must be between zero and total marks.");
+
+                return;
+
+            }
+
+        }
+
+    });
+
+
+    updateRemoveButtons();
+
+
+    // Draw the performance chart
+    const chartCanvas = document.getElementById("testComparisonChart");
+
+    if (chartCanvas && window.Chart) {
+
+        const chartData = {{ chart_data | tojson }};
+
+        new Chart(chartCanvas, {
+
+            type: "line",
+
+            data: {
+
+                labels: chartData.map(function (item) {
+                    return item.label;
+                }),
+
+                datasets: [{
+
+                    label: "Overall Percentage",
+
+                    data: chartData.map(function (item) {
+                        return item.percentage;
+                    }),
+
+                    tension: 0.25,
+
+                    fill: false
+
+                }]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                scales: {
+
+                    y: {
+
+                        beginAtZero: true,
+
+                        max: 100,
+
+                        title: {
+
+                            display: true,
+
+                            text: "Percentage (%)"
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
+
+})();
+</script>
+
+{% endblock %}
